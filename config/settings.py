@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'accounts',
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -118,10 +120,17 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-# Tells Django REST Framework to use JWT tokens to authenticate requests  Without this, DRF wouldn't know how to check the tokens SimpleJWT issues
+# Tells Django REST Framework to use JWT tokens to authenticate requests
+# Without this, DRF wouldn't know how to check the tokens SimpleJWT issues
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+# Allows our React frontend (running on a different port) to make
+# requests to this backend. Without this, the browser blocks it (CORS error).
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
