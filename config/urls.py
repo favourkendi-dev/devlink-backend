@@ -6,7 +6,7 @@ urlpatterns = [
     # Built in Django admin panel
     path('admin/', admin.site.urls),
 
-    # Any URL starting with api/auth/ gets handled by accounts/urls.py This is where our register/ endpoint lives (api/auth/register/)
+    # Any URL starting with api auth and gets handled by accounts urls.py this is where our register endpoint lives 
     
     path('api/auth/', include('accounts.urls')),
 
@@ -17,4 +17,8 @@ urlpatterns = [
     # Takes a valid refresh token returns a new access token  once the old access token has expired
     
     path('api/auth/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Any URL starting with api or posts and gets handled by postsurls.py
+
+    path('api/posts/', include('posts.urls')),
 ]
