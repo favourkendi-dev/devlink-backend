@@ -2,7 +2,8 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ProfileSerializer
+from .models import Profile
 
 
 class RegisterView(generics.CreateAPIView):
@@ -11,8 +12,6 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
 
-# A test view to prove JWT authentication works Only logged-in users (with a valid access token) can reach this
-
 class ProtectedTestView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -20,3 +19,13 @@ class ProtectedTestView(APIView):
         return Response({
             "message": f"Hello {request.user.username}, you are authenticated!"
         })
+
+
+# Lets a logged in user view and update their OWN profile
+class ProfileDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    # Normally DRF views work with a list of objects and you specify which object to work with by passing an ID in the URL. But here we want to work with the profile of the currently logged in user so we override get_object() to return that profile
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
