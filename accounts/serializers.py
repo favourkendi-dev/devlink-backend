@@ -1,21 +1,15 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import Profile
 
-
-# Handles turning incoming registration data into a real User and validates it before saving
 
 class RegisterSerializer(serializers.ModelSerializer):
-
-    # We add password separately so we can mark it write_only
-   
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
 
-    # This runs when we call serializer.save() in the view We override it because passwords need to be hashed  not stored as plain text
-    
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
@@ -23,3 +17,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+
+# Handles turning a Profile into JSON to send to the frontend and validating incoming JSON data when updating a profile
+class ProfileSerializer(serializers.ModelSerializer):
+
+    # These two come from the related User model, not Profile itself
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.CharField(source='user.email', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['id', 'username', 'email', 'bio', 'github_url', 'skills']

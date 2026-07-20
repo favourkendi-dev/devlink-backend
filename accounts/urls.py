@@ -1,9 +1,8 @@
 from django.urls import path
-from .views import ProtectedTestView, RegisterView
-
-# URL patterns specific to the accounts app this gets included into the main project urls.py next
-
+from .views import RegisterView, ProtectedTestView, ProfileDetailView
+# A list of URL patterns that Django will use to route incoming requests to the appropriate view
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('protected/', ProtectedTestView.as_view(), name='protected'),
+    path('profile/', ProfileDetailView.as_view(), name='profile'),
 ]
